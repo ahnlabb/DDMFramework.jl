@@ -1,0 +1,13 @@
+name = "DDMFramework"
+uuid = "1b294ee1-80a2-4bfa-8e62-95fa73f8a955"
+authors = ["Johannes Ahnlide <johannes@voxel.se>"]
+version = "0.1.0"
+
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+Mux = "a975b10e-0019-58db-a62f-e48ff68538c9"
+Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
