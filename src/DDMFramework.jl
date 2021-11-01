@@ -88,23 +88,25 @@ end
 
 function initiate_experiment(req)
     analysis = req[:params][:multipart]["analysis"]
-    parameters = get(req[:params][:multipart], Dict())
+    parameters = get(req[:params][:multipart], "parameters", Dict())
     exp_id = next_key(req[:db])
     return string(exp_id), exp_id => plugins[analysis](parameters)
 end
 
 function handle_get(path, func)
     function app(request)
-        state = request[:db][request[:params][:experiment_id]]
-        response = func(state, request[:query])
+        response = func(request[:state], request[:query])
         @info "\"$(req[:uri])\":" response
         return response
     end
-    return page(path, method("GET", app))
+    return page(path, app)
 end
 
 function query_dict(app, req)
-    req[:query] = Base.ImmutableDict{String,String}((k => v for (k,v) in HTTP.URIs.queryparams(req[:query]))...)
+    init = Base.ImmutableDict{String,String}()
+    req[:query] = foldl(HTTP.URIs.queryparams(req[:query]); init) do dict, kv
+        Base.ImmutableDict{String,String}(dict, kv...)
+    end
     app(req)
 end
 
@@ -138,7 +140,6 @@ function serve_ddm_application(;host=ip"127.0.0.1", port=4443)
     server = Sockets.listen(inet)
     db = ArrDb()
 
-
     experiment_api =
         mux(handle_post("/", initiate_experiment),
             route("/:experiment_id/",
@@ -157,7 +158,7 @@ function serve_ddm_application(;host=ip"127.0.0.1", port=4443)
         page("/plugins/", simple_layout(view_plugins)),
         stack(
             global_dict_db(db),
-            route("/api/experiments", experiment_api),
+            route("/api/v1/experiments", experiment_api),
             page("/experiments/", simple_layout(view_experiments)),
             route("/experiments/:experiment_id/", simple_layout(view_app))
         ),

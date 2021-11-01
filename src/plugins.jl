@@ -8,7 +8,7 @@ abstract type AbstractPlugin end
 #handle(state::AbstractImageState, data) = handle(state, data["image"], data["params"])
 
 struct CollectingPlugin <: AbstractPlugin
-    arr
+    arr::Vector{Any}
 end
 
 CollectingPlugin(params::Dict) = CollectingPlugin([])
@@ -16,6 +16,10 @@ CollectingPlugin(params::Dict) = CollectingPlugin([])
 function handle(state::CollectingPlugin, data)
     push!(state.arr, data)
     "", state
+end
+
+function query(state::CollectingPlugin, q)
+    json(state.arr)
 end
 
 function show_state(state, req; io)
@@ -63,7 +67,7 @@ end
 
 query(p::PlugTuple, q) = [query(p[1], q), query(p[2], q)]
 
-function show_state(p::PairPlugin, req; io)
+function show_state(p::PlugTuple, req; io)
     show_state(p[1], req; io)
     show_state(p[2], req; io)
 end
