@@ -88,7 +88,7 @@ end
 
 function initiate_experiment(req)
     analysis = req[:params][:multipart]["analysis"]
-    parameters = get(req[:params][:multipart], "parameters", Dict())
+    parameters = get(req[:params][:multipart], "parameters", Dict{String}())
     exp_id = next_key(req[:db])
     return string(exp_id), exp_id => plugins[analysis](parameters)
 end
