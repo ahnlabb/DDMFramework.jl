@@ -75,7 +75,7 @@ function handle_post(path, func)
     return page(path, mux(multipart, app))
 end
 
-function update_experiment(c)
+function update_experiment(func)
     function app(req)
         exp_id = parse(Int, req[:params][:experiment_id])
         state = req[:db][exp_id]
