@@ -75,7 +75,7 @@ function handle_post(path, func)
     return page(path, mux(multipart, app))
 end
 
-function update_experiment(func)
+function update_experiment(c)
     function app(req)
         exp_id = parse(Int, req[:params][:experiment_id])
         state = req[:db][exp_id]
@@ -144,7 +144,7 @@ function serve_ddm_application(;host=ip"127.0.0.1", port=4443)
         mux(handle_post("/", initiate_experiment),
             route("/:experiment_id/",
                   experiment,
-                  handle_post("/update", update_experiment(handle)),
+                  handle_post("/update", update_experiment(handle_update)),
                   handle_get("/", query),
                   Mux.notfound()
                   ),
