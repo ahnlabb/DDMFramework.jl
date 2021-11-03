@@ -88,7 +88,7 @@ end
 
 function initiate_experiment(req)
     analysis = req[:params][:multipart]["analysis"]
-    parameters = get(req[:params][:multipart], "parameters", Dict())
+    parameters = get(req[:params][:multipart], "parameters", Dict{String,Any}())
     exp_id = next_key(req[:db])
     return string(exp_id), exp_id => plugins[analysis](parameters)
 end
@@ -144,7 +144,7 @@ function serve_ddm_application(;host=ip"127.0.0.1", port=4443)
         mux(handle_post("/", initiate_experiment),
             route("/:experiment_id/",
                   experiment,
-                  handle_post("/update", update_experiment(handle)),
+                  handle_post("/update", update_experiment(handle_update)),
                   handle_get("/", query_state),
                   Mux.notfound()
                   ),

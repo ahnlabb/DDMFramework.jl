@@ -13,7 +13,7 @@ end
 
 CollectingPlugin(params::Dict) = CollectingPlugin([])
 
-function handle(state::CollectingPlugin, data)
+function handle_update(state::CollectingPlugin, data)
     push!(state.arr, data)
     "", state
 end
@@ -54,14 +54,14 @@ end
 DynamicPluginWrapper(plugin; handle_fun=handle, query_fun=query_state, html_fun=show_state) =
     DynamicPluginWrapper(plugin, handle_fun, query_fun, html_fun)
 
-handle(p::DynamicPluginWrapper, data) = p.handle_fun(p.plugin, data)
+handle_update(p::DynamicPluginWrapper, data) = p.handle_fun(p.plugin, data)
 query_state(p::DynamicPluginWrapper, q) = p.query_fun(p.plugin, q)
 show_state(p::DynamicPluginWrapper, req; io) = p.html_fun(p.plugin, req; io)
 
 const PlugTuple = Tuple{AbstractPlugin,AbstractPlugin}
-function handle(plugs::PlugTuple, data)
-    left = handle(plugs[1], data)
-    right = handle(plugs[2], data)
+function handle_update(plugs::PlugTuple, data)
+    left = handle_update(plugs[1], data)
+    right = handle_update(plugs[2], data)
     [left, right]
 end
 
