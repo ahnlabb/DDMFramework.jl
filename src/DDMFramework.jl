@@ -145,7 +145,7 @@ function serve_ddm_application(;host=ip"127.0.0.1", port=4443)
             route("/:experiment_id/",
                   experiment,
                   handle_post("/update", update_experiment(handle)),
-                  handle_get("/", query),
+                  handle_get("/", query_state),
                   Mux.notfound()
                   ),
             Mux.notfound())
