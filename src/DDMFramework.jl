@@ -56,13 +56,19 @@ function multipart(app, req)
     app(req)
 end
 
+
 readimg(io) = ImageMagick.load_(read(io))
+
 mime_mapping = Dict(
     "image/tiff" => readimg,
     "image/tif" => readimg,
     "application/json" => mp -> JSON.Parser.parse(read(mp, String)),
     "text/plain" => mp -> read(mp, String)
 )
+
+function register_mime_type(mime, fun)
+    push!(mime_mapping, mime => fun)
+end
 
 parse_multipart(multi::HTTP.Multipart) = mime_mapping[multi.contenttype](multi.data)
 
