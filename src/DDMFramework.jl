@@ -51,7 +51,7 @@ function multipart(app, req)
     boundary_delimiter = m[1]
     length(boundary_delimiter) > 70 && error("boundary delimiter must not be greater than 70 characters")
     
-    data = HTTP.MultiPartParsing.parse_multipart_body(req[:data], boundary_delimiter)
+    data = HTTP.parse_multipart_body(req[:data], boundary_delimiter)
     req[:params][:multipart] = Dict(d.name => parse_multipart(d) for d in data)
     app(req)
 end
@@ -102,7 +102,7 @@ end
 function handle_get(path, func)
     function app(request)
         response = func(request[:state], request[:query])
-        @info "\"$(req[:uri])\":" response
+        @info "\"$(request[:uri])\":" response
         return response
     end
     return page(path, app)
@@ -154,7 +154,8 @@ function serve_ddm_application(;host=ip"127.0.0.1", port=4443)
                   handle_get("/", query_state),
                   Mux.notfound()
                   ),
-            Mux.notfound())
+            Mux.notfound()
+    )
 
     @app main = (
         Mux.defaults,
@@ -169,7 +170,8 @@ function serve_ddm_application(;host=ip"127.0.0.1", port=4443)
             route("/experiments/:experiment_id/", simple_layout(view_app))
         ),
         page("/close", req -> (close(server); "closed")),
-        Mux.notfound())
+        Mux.notfound()
+    )
 
     return server, Mux.serve(main, server=server)
 end
