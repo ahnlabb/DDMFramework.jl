@@ -63,7 +63,7 @@ function default_plugin_page(name, json)
                     formData.append("analysis", "$(name)");
 
 
-                    const content = editor.get();
+                    const content = JSON.stringify(editor.get());
                     const blob = new Blob([content], { type: "application/json"});
                     formData.append("parameters", blob);
 
