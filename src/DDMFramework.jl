@@ -22,6 +22,12 @@ function view_app(req; io)
     show_state(state, req; io)
 end
 
+function view_plugin_page(req)
+    name = req[:params][:plugin]
+    p = plugins[name]
+    plugin_page(p, req)
+end
+
 function logcatch(app, req)
     try
         app(req)
@@ -162,6 +168,7 @@ function serve_ddm_application(;host=ip"127.0.0.1", port=4443)
         logcatch,
         query_dict,
         page("/plugins/", simple_layout(view_plugins)),
+        route("/plugins/:plugin", view_plugin_page),
         stack(
             global_dict_db(db),
             route("/api/v1/experiments", experiment_api),

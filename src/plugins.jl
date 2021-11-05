@@ -7,6 +7,10 @@ end
 abstract type AbstractPlugin end
 #handle(state::AbstractImageState, data) = handle(state, data["image"], data["params"])
 
+function plugin_page(plugin, req)
+    default_plugin_page(req[:params][:plugin], Dict())
+end
+
 struct CollectingPlugin <: AbstractPlugin
     arr::Vector{Any}
 end
