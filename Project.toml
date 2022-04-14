@@ -14,8 +14,8 @@ OMETIFF = "2d0ec36b-e807-5756-994b-45af29551fcf"
 Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
 
 [compat]
+HTTP = "0.9.0 - 0.9.13, 0.9"
 julia = "1"
-HTTP = "0.9.0 - 0.9.13"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
