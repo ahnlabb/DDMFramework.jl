@@ -62,6 +62,17 @@ function simple_segmentation(img; minsize=150, maxsize=2000)
     return labeled_image
 end
 
+function keyfun(data)::Tuple{Float64}
+    x = data["image"].Pixels[:Plane][1][:PositionX]
+    y = data["image"].Pixels[:Plane][1][:PositionY]
+    return (x,y)
+end
+
+function keytest(kleft::Tuple{Float64}, kright::Tuple{Float64})
+    atol = 1.2
+    isapprox.(kleft,kright;atol) |> all
+end
+
 MultiPointAnalysis("NucleusProperties") do image, config
     # Segmentation parameters
     seg_params = config["segmentation"]
