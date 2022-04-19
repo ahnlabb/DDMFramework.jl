@@ -37,6 +37,8 @@ using DDMFramework
 using RegionProps
 using DataFrames
 using Chain
+using SparseArrays
+using StatsBase
 
 otsu_segment(img) = img .> otsu_threshold(img)
 
