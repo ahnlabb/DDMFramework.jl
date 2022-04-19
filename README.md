@@ -73,7 +73,7 @@ function keytest(kleft::Tuple{Float64}, kright::Tuple{Float64})
     isapprox.(kleft,kright;atol) |> all
 end
 
-MultiPointAnalysis("NucleusProperties") do image, config
+MultiPointAnalysis("NucleusProperties", keyfun; keytest) do image, config
     # Segmentation parameters
     seg_params = config["segmentation"]
 
