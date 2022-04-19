@@ -84,7 +84,7 @@ MultiPointAnalysis("NucleusProperties") do image, config
     return regionprops(
         image,
         labeled_image;
-        selected=unique(nonzeros(labeled_image)),
+        selected=unique(nonzeros(labeled_image))
     )
 end
 ```
