@@ -15,7 +15,7 @@ The simplest way to create a plugin is to generate a dynamic plugin using
 `MultiPointAnalysis`.
 
 ``` julia
-MultiPointAnalysis(analyisis, name::String, keyfun; keytest=(==))
+MultiPointAnalysis(analysis, name::String, keyfun; keytest=(==))
 ```
 
 The first argument, `analysis`, is a function that receives an acquired image
