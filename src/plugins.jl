@@ -75,3 +75,88 @@ function show_state(p::PlugTuple, req; io)
     show_state(p[1], req; io)
     show_state(p[2], req; io)
 end
+
+struct MultiPointAnalysisMeta
+    analysis
+    name::String
+    keyfun
+    keytest
+end
+
+struct MultiPointAnalysis
+    analysis::MultiPointAnalysisMeta
+    config::Dict{String,Any}
+    fov_arr
+end
+
+multipoint(analyisis, name::String, keyfun; keytest=(==)) = MultiPointAnalysisMeta(analysis, name, keyfun, keytest)
+
+FOV = Pair{Any, Array{DataFrame}}
+(a::MultiPointAnalysis)(config) = MultiPointAnalysis(a, config, FOV[])
+
+name(p::MultiPointAnalysisMeta) = p.name
+
+function add_key_columns!(df, key::NT) where NT <: NamedTuple
+    for (k, v) in pairs(key)
+        df[!, k] .= v
+    end
+    df
+end
+
+function add_key_columns!(df, key)
+    df[!, :key] .= key
+    df
+end
+
+function collect_objects(state::MultiPointAnalysis)
+    objects = DataFrame()
+    for (fov_id, fov) in enumerate(state.fov_arr)
+        key, data = fov
+        for (t, prop) in enumerate(data)
+            df = copy(prop)
+            df[!, :fov_id] .= fov_id
+            df[!, :t] .= t
+            add_key_columns!(df, key)
+            append!(objects, df)
+        end
+    end
+    objects
+end
+
+
+function handle_update(p::MultiPointAnalysis, data)
+    image = data["image"]
+    config = 
+end
+
+function query_state(p::MultiPointAnalysis, q)
+end
+
+function show_state(p::MultiPointAnalysis, req; io)
+end
+
+struct Map <: AbstractPlugin
+    fun
+    plugins::Vector{AbstractPlugin}
+end
+
+function Map(fun, plugins...)
+    function init(config)
+        states = map(plugins) do p
+            p(config[name(p)])
+        end
+        Map(fun, states)
+    end
+end
+
+function handle_update(plugin::Map, data)
+    updates = map(plugin.plugins) do p
+        handle_update(p, data)
+    end
+    resp, Map(plugin.fun, updates)
+end
+
+function query_state(p::Map, q)
+    objects = map(collect_objects, p.plugins)
+    p.fun(q, objects...)
+end
