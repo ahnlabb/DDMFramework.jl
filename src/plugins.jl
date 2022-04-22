@@ -4,6 +4,10 @@ function add_plugin(name, fun)
     plugins[name] = fun
 end
 
+function add_plugin(plugin)
+    plugins[name(plugin)] = plugin
+end
+
 abstract type AbstractPlugin end
 #handle(state::AbstractImageState, data) = handle(state, data["image"], data["params"])
 
@@ -83,7 +87,7 @@ struct MultiPointAnalysisMeta
     keytest
 end
 
-struct MultiPointAnalysis
+struct MultiPointAnalysis <: AbstractPlugin
     analysis::MultiPointAnalysisMeta
     config::Dict{String,Any}
     fov_arr

@@ -10,12 +10,12 @@ DDMFramework.jl is a Julia package for building and running data-driven microsco
 ## Plugins
 A plugin manages updating and querying state for an analysis.
 
-### `MultiPointAnalysis`
+### `multipoint`
 The simplest way to create a plugin is to generate a dynamic plugin using
-`MultiPointAnalysis`.
+`multipoint`.
 
 ``` julia
-MultiPointAnalysis(analysis, name::String, keyfun; keytest=(==))
+multipoint(analysis, name::String, keyfun; keytest=(==))
 ```
 
 The first argument, `analysis`, is a function that receives an acquired image
@@ -73,7 +73,7 @@ function keytest(kleft::Tuple{Float64}, kright::Tuple{Float64})
     isapprox.(kleft,kright;atol) |> all
 end
 
-MultiPointAnalysis("NucleusProperties", keyfun; keytest) do image, config
+my_plugin = multipoint("NucleusProperties", keyfun; keytest) do image, config
     # Segmentation parameters
     seg_params = config["segmentation"]
 
@@ -87,6 +87,8 @@ MultiPointAnalysis("NucleusProperties", keyfun; keytest) do image, config
         selected=unique(nonzeros(labeled_image))
     )
 end
+
+add_plugin(my_plugin)
 ```
 
 ## Plugin interface
