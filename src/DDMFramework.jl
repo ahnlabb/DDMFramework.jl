@@ -9,6 +9,10 @@ import HTTP
 
 export add_plugin, handle, query
 
+include("lazydf.jl")
+include("table_queries.jl")
+include("query.jl")
+include("show_query.jl")
 include("plugins.jl")
 include("html.jl")
 

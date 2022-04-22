@@ -87,8 +87,29 @@ struct MultiPointAnalysisMeta
     keytest
 end
 
+function schema(mpa::MultiPointAnalysisMeta)
+    schema = Dict(
+        "query" => "Query",
+        "Query" => Dict(
+            name(mpa) => name(mpa),
+            "fov" => "FOV"
+        ),
+        "FOV" => Dict(
+        )
+    )
+end
+
+query_resolvers(fields...) = Dict("Query" => Dict(fields...))
+
+function resolvers(mpa::MultiPointAnalysisMeta)
+    query_resolvers(
+                   name(mpa) => (parent, args) -> collect_state(state, args),
+                   "fov" => (parent, args) -> get_fovs(state, args)
+                  )
+end
+
 struct MultiPointAnalysis <: AbstractPlugin
-    analysis::MultiPointAnalysisMeta
+    meta::MultiPointAnalysisMeta
     config::Dict{String,Any}
     fov_arr
 end
@@ -96,7 +117,7 @@ end
 multipoint(analyisis, name::String, keyfun; keytest=(==)) = MultiPointAnalysisMeta(analysis, name, keyfun, keytest)
 
 FOV = Pair{Any, Array{DataFrame}}
-(a::MultiPointAnalysis)(config) = MultiPointAnalysis(a, config, FOV[])
+(a::MultiPointAnalysisMeta)(config) = MultiPointAnalysis(a, config, FOV[])
 
 name(p::MultiPointAnalysisMeta) = p.name
 
@@ -127,13 +148,32 @@ function collect_objects(state::MultiPointAnalysis)
     objects
 end
 
-
-function handle_update(p::MultiPointAnalysis, data)
-    image = data["image"]
-    config = 
+function get_fov!(state::MultiPointAnalysis, params)
+    key = state.meta.keyfun(params)
+    fov_id = findfirst(state.fov_arr) do (k, _)
+        state.meta.keytest(key, k) 
+    end
+    if isnothing(fov_id)
+        fov = FOV(key,[])
+        push!(state, fov)
+        return fov
+    end
+    return state.fov_arr[fov_id]
 end
 
-function query_state(p::MultiPointAnalysis, q)
+function handle_update(state::MultiPointAnalysis, data)
+    image = data["image"]
+    fov = get_fov!(state, metadata(image))
+
+    props = state.meta.analysis(image, state.config)
+
+    push!(fov, props)
+
+    ("0", state)
+end
+
+function query_state(state::MultiPointAnalysis, query)
+    execute_query(query["query"], schema(state.meta), resolvers(state.meta)) |> JSON.json
 end
 
 function show_state(p::MultiPointAnalysis, req; io)
@@ -155,12 +195,13 @@ end
 
 function handle_update(plugin::Map, data)
     updates = map(plugin.plugins) do p
-        handle_update(p, data)
+        _, state = handle_update(p, data)
+        state
     end
-    resp, Map(plugin.fun, updates)
+    "0", Map(plugin.fun, updates)
 end
 
 function query_state(p::Map, q)
     objects = map(collect_objects, p.plugins)
-    p.fun(q, objects...)
+    p.fun(objects..., q)
 end
