@@ -5,6 +5,8 @@ using Logging
 using ImageMagick
 using JSON
 using Dates
+using DataFrames
+using AbstractTrees
 import HTTP
 
 export add_plugin, handle, query
@@ -174,7 +176,7 @@ function serve_ddm_application(;host=ip"127.0.0.1", port=4443)
         query_dict,
         page("/plugins/", simple_layout(view_plugins)),
         route("/plugins/:plugin", view_plugin_page),
-        stack(
+        Mux.stack(
             global_dict_db(db),
             route("/api/v1/experiments", experiment_api),
             page("/experiments/", simple_layout(view_experiments)),

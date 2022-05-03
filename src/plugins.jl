@@ -114,7 +114,7 @@ struct MultiPointAnalysis <: AbstractPlugin
     fov_arr
 end
 
-multipoint(analyisis, name::String, keyfun; keytest=(==)) = MultiPointAnalysisMeta(analysis, name, keyfun, keytest)
+multipoint(analysis, name::String, keyfun; keytest=(==)) = MultiPointAnalysisMeta(analysis, name, keyfun, keytest)
 
 FOV = Pair{Any, Array{DataFrame}}
 (a::MultiPointAnalysisMeta)(config) = MultiPointAnalysis(a, config, FOV[])
