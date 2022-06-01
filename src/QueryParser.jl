@@ -12,8 +12,6 @@ end
 
 Query(name, queries...; args=[]) = Query(name, args, collect(queries))
 
-include("show_query.jl")
-
 function join_map(f, parser, delim)
     w = Sequence(1, parser)
     map(w * Repeat((delim * w)[2])) do (head, tail)
