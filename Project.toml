@@ -18,7 +18,7 @@ Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
 
 [compat]
 AbstractTrees = "0.3"
-HTTP = "0.9.0 - 0.9.13"
+HTTP = "0.9.0 - 0.9.13, 1"
 ImageMagick = "1"
 JSON = "0.21"
 Mux = "0.7"
