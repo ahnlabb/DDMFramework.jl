@@ -1,5 +1,5 @@
 table_filters = Dict(
-    "bin" => function bin(data,sel,n)
+    "bin" => function(data,sel,n)
         data = filter(!isnan, data)
         if sel == 1
             hi = quantile(data,sel/n)
@@ -13,16 +13,16 @@ table_filters = Dict(
         end
     end,
     
-    ">" => function gt(data, v)
+    ">" => function(data, v)
         >(v)
     end,
-    "<" => function lt(data, v)
+    "<" => function(data, v)
         <(v)
     end,   
-    "max" => function _max(data)
+    "max" => function(data)
         ==(maximum(data))
     end,
-    "eq" => function gt(data, v)
+    "eq" => function(data, v)
         ==(v)
     end
 )

@@ -55,6 +55,10 @@ function string_buffer(fun)
     String(take!(io))
 end
 
+function kwiterator(dict, keys...)
+    ((k, dict[String(k)]) for k in keys if String(k) in dict)
+end
+
 function multipart(app, req)
     headers = Dict(req[:headers])
     content_type = headers["content-type" ∈ keys(headers) ? "content-type" : "Content-Type"]    

@@ -78,7 +78,7 @@ my_plugin = multipoint("NucleusProperties", keyfun; keytest) do image, config
     seg_params = config["segmentation"]
 
     # Segment and filter objects on size in image
-    labeled_image = simple_segmentation(image, to_named_tuple(seg_params)...)
+    labeled_image = simple_segmentation(image, kwiterator(seg_params, :minsize, :maxsize)...)
 
     # Extract stats about our objects
     return regionprops(
