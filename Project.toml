@@ -1,7 +1,7 @@
 name = "DDMFramework"
 uuid = "1b294ee1-80a2-4bfa-8e62-95fa73f8a955"
 authors = ["Johannes Ahnlide <johannes@voxel.se> and contributors"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
