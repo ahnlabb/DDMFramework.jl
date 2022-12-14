@@ -29,6 +29,7 @@ function default_plugin_page(name, json)
                     <div class="content">
                         <div class="columns">
                             <div class="column">
+                                <input id="fileJson" type="file" accept=".json" onChange="fileJson()" />
                                 <textarea class="textarea" id="jsontext"></textarea>
                             </div>
                             <div class="column">
@@ -58,6 +59,17 @@ function default_plugin_page(name, json)
                    editor.set(JSON.parse(jsontext.value))
                 }
 
+                function fileJson() {
+                    let fileToLoad = document.getElementById("fileJson").files[0];
+                    let fileReader = new FileReader();
+                    fileReader.onload = function(fileLoadedEvent) {
+                        let textFromFileLoaded = fileLoadedEvent.target.result;
+                        jsontext.value = textFromFileLoaded
+                        setJson()
+                    };
+                    fileReader.readAsText(fileToLoad, "UTF-8");
+                }
+
                 function post() {
                     const formData = new FormData();
                     formData.append("analysis", "$(name)");
@@ -70,6 +82,15 @@ function default_plugin_page(name, json)
                     const request = new XMLHttpRequest();
                     request.open("POST", "/api/v1/experiments/");
                     request.send(formData);
+
+                    request.onload = function() {
+                        if (request.status === 200) {
+                            window.location.href = "/experiments/";
+                        } else {
+                            console.log(request.response);
+                        }
+                    }
+                          
                 }
             </script>
         </body>
@@ -112,7 +133,7 @@ function show_entry(db, exp_id)
     <div class="card">
         <div class="card-content">
             <div class="content">
-                $(d.metadata.created) $(d.data)
+                Exp. $(exp_id): $(d.metadata.created) $(d.data)
             </div>
         </div>
     </div>
