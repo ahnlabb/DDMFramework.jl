@@ -19,10 +19,6 @@ include("show_query.jl")
 include("plugins.jl")
 include("html.jl")
 
-function mux(args...)
-    f = Mux.mux(args...)
-end
-
 function experiment(app, req)
     req[:state] = req[:db][parse(Int, req[:params][:experiment_id])]
     app(req)
