@@ -23,6 +23,7 @@ function default_plugin_page(name, json)
         <link href="https://cdn.jsdelivr.net/npm/jsoneditor@9.5.6/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
         <script src="https://cdn.jsdelivr.net/npm/jsoneditor@9.5.6/dist/jsoneditor.min.js"></script>
         </head>
+        <h1>System and Plugin configuration</h1>
         <body>
             <div class="card">
                 <div class="card-content">
