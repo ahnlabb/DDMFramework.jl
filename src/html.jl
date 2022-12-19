@@ -113,7 +113,6 @@ function view_plugins(req; io=IOBuffer())
         println(
             io,
             """
-            <h1>Plugins</h1>
             <a href="/plugins/$p/">
                 <div class="card">
                     <div class="card-content">
